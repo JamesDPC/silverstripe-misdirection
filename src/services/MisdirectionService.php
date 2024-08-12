@@ -50,7 +50,7 @@ class MisdirectionService
      *	@parameter <{RETURN_STACK}> boolean
      */
 
-    public function getMappingByRequest($request, $testing = false): ?LinkMapping
+    public function getMappingByRequest($request, $testing = false): LinkMapping|array
     {
 
         // Make sure a URL comes through correctly.
