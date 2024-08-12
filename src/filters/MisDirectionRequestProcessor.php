@@ -9,6 +9,7 @@
 
 namespace nglasl\misdirection;
 
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
@@ -16,6 +17,7 @@ use SilverStripe\Control\Middleware\HTTPMiddleware;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\ErrorPage\ErrorPage;
 
 class MisDirectionRequestProcessor implements HTTPMiddleware
 {
@@ -130,7 +132,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
 
                 // Retrieve the appropriate page not found response.
 
-                (class_exists(SiteTree::class) && ($page = ErrorPage::response_for(404))) ? $response->setBody($page->getBody()) : $response->setBody('No URL was matched!');
+                (class_exists(SiteTree::class) && class_exists(ErrorPage::class) && ($page = ErrorPage::response_for(404))) ? $response->setBody($page->getBody()) : $response->setBody('No URL was matched!');
             }
 
         }
