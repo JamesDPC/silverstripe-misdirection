@@ -84,7 +84,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
 
         if($response) {
 
-            $status = $response ? $response->getStatusCode() : null;
+            $status = $response->getStatusCode();
             $success = (($status >= 200) && ($status < 300));
             $error = ($status === 404);
 
