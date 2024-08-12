@@ -6,8 +6,8 @@ on:
 jobs:
   Silverstripe:
     name: 'Silverstripe (bundle)'
-    uses: nswdpc/ci-files/.github/workflows/silverstripe.yml@1.1.0
+    uses: nswdpc/ci-files/.github/workflows/silverstripe.yml@1.1.1
   PHPStan:
     name: 'PHPStan (analyse)'
-    uses: nswdpc/ci-files/.github/workflows/phpstan.silverstripe.yml@1.1.0
+    uses: nswdpc/ci-files/.github/workflows/phpstan.silverstripe.yml@1.1.1
     needs: Silverstripe
