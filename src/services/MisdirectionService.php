@@ -48,10 +48,9 @@ class MisdirectionService
      *
      *	@parameter <{REQUEST}> http request
      *	@parameter <{RETURN_STACK}> boolean
-     *	@return link mapping
      */
 
-    public function getMappingByRequest($request, $testing = false)
+    public function getMappingByRequest($request, $testing = false): ?LinkMapping
     {
 
         // Make sure a URL comes through correctly.
@@ -79,10 +78,9 @@ class MisdirectionService
      *
      *	@parameter <{URL}> string
      *	@parameter <{HOSTNAME}> string
-     *	@return link mapping
      */
 
-    public function getMapping($URL, $host = null)
+    public function getMapping($URL, $host = null): ?LinkMapping
     {
 
         $URL = self::is_external_URL($URL) ? parse_url((string) $URL, PHP_URL_PATH) : Director::makeRelative($URL);
@@ -179,10 +177,9 @@ class MisdirectionService
      *	@parameter <{LINK_MAPPING}> link mapping
      *	@parameter <{HOSTNAME}> string
      *	@parameter <{RETURN_STACK}> boolean
-     *	@return link mapping/array
      */
 
-    public function getRecursiveMapping($map, $host = null, $testing = false)
+    public function getRecursiveMapping($map, $host = null, $testing = false): LinkMapping|array
     {
 
         // Keep track of the link mapping recursion.
