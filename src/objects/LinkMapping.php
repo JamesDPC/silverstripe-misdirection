@@ -227,7 +227,7 @@ class LinkMapping extends DataObject
 
         // Allow redirect page configuration when the CMS module is present.
 
-        if(ClassInfo::exists(SiteTree::class)) {
+        if(class_exists(SiteTree::class)) {
 
             // Allow redirect type configuration.
 
@@ -338,7 +338,7 @@ class LinkMapping extends DataObject
     public function getRedirectPage(): ?SiteTree
     {
 
-        return (ClassInfo::exists(SiteTree::class) && $this->RedirectPageID) ? SiteTree::get()->byID($this->RedirectPageID) : null;
+        return (class_exists(SiteTree::class) && $this->RedirectPageID) ? SiteTree::get()->byID($this->RedirectPageID) : null;
     }
 
     /**
@@ -363,7 +363,7 @@ class LinkMapping extends DataObject
             // When appropriate, prepend the base URL to match a page redirection.
             $prepended = Controller::join_links(Director::baseURL(), $link);
             if(MisdirectionService::is_external_URL($link)) {
-                return ClassInfo::exists(Multisites::class) ? HTTP::setGetVar('misdirected', true, $link) : $link;
+                return class_exists(Multisites::class) ? HTTP::setGetVar('misdirected', true, $link) : $link;
             }
 
             // This is needed, otherwise infinitely recursive mappings won't be detected in advance.
