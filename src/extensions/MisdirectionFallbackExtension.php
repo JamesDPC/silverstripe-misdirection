@@ -38,6 +38,7 @@ class MisdirectionFallbackExtension extends DataExtension
         if($this->getOwner() instanceof SiteConfig) {
             return $this->getOwner()->updateFields($fields);
         }
+
         return null;
     }
 

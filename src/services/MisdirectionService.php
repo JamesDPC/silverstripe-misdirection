@@ -290,6 +290,7 @@ class MisdirectionService
             } else {
                 $parentID = 0;
             }
+
             // Determine the page specific fallback.
             $counter = count($segments);
 
