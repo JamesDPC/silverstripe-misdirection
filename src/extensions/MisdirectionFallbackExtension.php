@@ -18,13 +18,13 @@ use SilverStripe\View\Requirements;
 
 class MisdirectionFallbackExtension extends DataExtension
 {
-    private static $db = [
+    private static array $db = [
         'Fallback' => 'Varchar(255)',
         'FallbackLink' => 'Varchar(255)',
         'FallbackResponseCode' => 'Int'
     ];
 
-    private static $defaults = [
+    private static array $defaults = [
         'FallbackResponseCode' => 303
     ];
 
@@ -35,9 +35,10 @@ class MisdirectionFallbackExtension extends DataExtension
     public function updateCMSFields(FieldList $fields)
     {
 
-        if($this->owner instanceof SiteConfig) {
-            return $this->owner->updateFields($fields);
+        if($this->getOwner() instanceof SiteConfig) {
+            return $this->getOwner()->updateFields($fields);
         }
+        return null;
     }
 
     public function updateSettingsFields($fields)
@@ -45,7 +46,7 @@ class MisdirectionFallbackExtension extends DataExtension
 
         // This extension only exists for pages.
 
-        return $this->owner->updateFields($fields);
+        return $this->getOwner()->updateFields($fields);
     }
 
     public function updateFields($fields)
@@ -61,7 +62,7 @@ class MisdirectionFallbackExtension extends DataExtension
             'This' => 'This Page',
             'URL' => 'URL'
         ];
-        if($this->owner instanceof SiteConfig) {
+        if($this->getOwner() instanceof SiteConfig) {
             $tab = 'Root.Pages';
             unset($options['This']);
         }
@@ -91,9 +92,11 @@ class MisdirectionFallbackExtension extends DataExtension
                 $selection[$code] = "{$code}: {$description}";
             }
         }
-        if(!$this->owner->FallbackResponseCode) {
-            $this->owner->FallbackResponseCode = 303;
+
+        if(!$this->getOwner()->FallbackResponseCode) {
+            $this->getOwner()->FallbackResponseCode = 303;
         }
+
         $fields->addFieldToTab($tab, DropdownField::create(
             'FallbackResponseCode',
             'Response Code',
@@ -102,7 +105,7 @@ class MisdirectionFallbackExtension extends DataExtension
 
         // Allow extension customisation.
 
-        $this->owner->extend('updateMisdirectionFallbackExtensionFields', $fields);
+        $this->getOwner()->extend('updateMisdirectionFallbackExtensionFields', $fields);
     }
 
 }

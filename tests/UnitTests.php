@@ -23,7 +23,7 @@ class UnitTests extends SapphireTest
      *	The test to ensure the simple link mappings are functioning correctly.
      */
 
-    public function testSimpleLinkMappings()
+    public function testSimpleLinkMappings(): void
     {
 
         // Instantiate link mappings to use (the equivalent of does NOT include hostname).
@@ -76,7 +76,7 @@ class UnitTests extends SapphireTest
      *	The test to ensure the regular expression replacement is correct.
      */
 
-    public function testRegularExpressionReplacement()
+    public function testRegularExpressionReplacement(): void
     {
 
         // Instantiate a link mapping to use.
@@ -99,7 +99,7 @@ class UnitTests extends SapphireTest
      *	The test to ensure the regular expression link mappings are functioning correctly.
      */
 
-    public function testRegularExpressionLinkMappings()
+    public function testRegularExpressionLinkMappings(): void
     {
 
         // Instantiate link mappings to use (the equivalent of does NOT include hostname).
@@ -152,7 +152,7 @@ class UnitTests extends SapphireTest
      *	The test to ensure the link mapping priority is correct.
      */
 
-    public function testMappingPriority()
+    public function testMappingPriority(): void
     {
 
         // Instantiate link mappings to use.
@@ -165,6 +165,7 @@ class UnitTests extends SapphireTest
             ]
         );
         $first->write();
+
         $second = LinkMapping::create(
             [
                 'LinkType' => 'Simple',

@@ -12,17 +12,17 @@ use SilverStripe\Security\Permission;
  */
 class MisdirectionAdmin extends ModelAdmin
 {
-    private static $managed_models = LinkMapping::class;
+    private static string $managed_models = LinkMapping::class;
 
-    private static $menu_title = 'Misdirection';
+    private static string $menu_title = 'Misdirection';
 
-    private static $menu_description = 'Create, manage and test customisable link redirection mappings.';
+    private static string $menu_description = 'Create, manage and test customisable link redirection mappings.';
 
-    private static $menu_icon_class = 'font-icon-switch';
+    private static string $menu_icon_class = 'font-icon-switch';
 
-    private static $url_segment = 'misdirection';
+    private static string $url_segment = 'misdirection';
 
-    private static $allowed_actions = [
+    private static array $allowed_actions = [
         'getMappingChain'
     ];
 

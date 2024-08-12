@@ -40,7 +40,7 @@ class MisdirectionAdminTestingExtension extends Extension
 
         // Allow extension customisation.
 
-        $this->owner->extend('updateMisdirectionAdminTestingExtensionEditForm', $form);
+        $this->getOwner()->extend('updateMisdirectionAdminTestingExtensionEditForm', $form);
     }
 
 }

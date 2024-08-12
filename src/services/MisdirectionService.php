@@ -24,10 +24,8 @@ class MisdirectionService
      *	Unifies a URL so link mappings are predictable.
      *
      *	@parameter <{URL}> string
-     *	@return string
      */
-
-    public static function unify_URL($URL)
+    public static function unify_URL($URL): string
     {
 
         return strtolower(trim($URL ?? '', ' ?/'));
@@ -37,10 +35,8 @@ class MisdirectionService
      *	Use third party validation to determine an external URL (https://gist.github.com/dperini/729294 and http://mathiasbynens.be/demo/url-regex).
      *
      *	@parameter <{URL}> string
-     *	@return boolean
      */
-
-    public static function is_external_URL($URL)
+    public static function is_external_URL($URL): int|false
     {
 
         $URL = trim($URL ?? '', '/?!"#$%&\'()*+,-.@:;<=>[\\]^_`{|}~');
@@ -89,8 +85,9 @@ class MisdirectionService
     public function getMapping($URL, $host = null)
     {
 
-        $URL = self::is_external_URL($URL) ? parse_url($URL, PHP_URL_PATH) : Director::makeRelative($URL);
+        $URL = self::is_external_URL($URL) ? parse_url((string) $URL, PHP_URL_PATH) : Director::makeRelative($URL);
         $URL = self::unify_URL($URL);
+
         $parts = explode('?', $URL);
 
         // Instantiate the link mapping query.
@@ -102,6 +99,7 @@ class MisdirectionService
         if(is_null($host) && Controller::has_curr() && ($controller = Controller::curr())) {
             $host = $controller->getRequest()->getHeader('Host');
         }
+
         $temporary = $host;
         $host = Convert::raw2sql($host);
         $matches = $matches->where("(HostnameRestriction IS NULL) OR (HostnameRestriction = '{$host}')");
@@ -122,6 +120,7 @@ class MisdirectionService
                 $filtered->push($match);
             }
         }
+
         $filtered->merge($matches);
         $matches = $filtered;
 
@@ -140,6 +139,7 @@ class MisdirectionService
         if(isset($parts[1])) {
             parse_str($parts[1], $queryParameters);
         }
+
         foreach($matches as $match) {
 
             // Make sure the link mapping is live on the current stage.
@@ -218,6 +218,7 @@ class MisdirectionService
 
                 return $testing ? $chain : null;
             }
+
             $redirect = $next->getLink();
             $chain[] = array_merge($next->toMap(), [
                 'Counter' => ++$counter,
@@ -230,6 +231,7 @@ class MisdirectionService
             if($next->getLinkHost()) {
                 $host = $next->getLinkHost();
             }
+
             $map = $next;
         }
 
@@ -245,7 +247,7 @@ class MisdirectionService
      *	@return array(string, integer)
      */
 
-    public function determineFallback($URL)
+    public function determineFallback($URL): ?array
     {
 
         // Make sure the CMS module is present.
@@ -270,7 +272,8 @@ class MisdirectionService
             $config = SiteConfig::current_site_config();
             if($config && $config->Fallback) {
                 $applicableRule = $config->Fallback;
-                $nearestParent = $thisPage = Director::baseURL();
+                $nearestParent = Director::baseURL();
+                $thisPage = $nearestParent;
                 $toURL = $config->FallbackLink;
                 $responseCode = $config->FallbackResponseCode;
             }
@@ -281,17 +284,20 @@ class MisdirectionService
                 $parentID = $parent->ID;
                 if($parent->Fallback) {
                     $applicableRule = $parent->Fallback;
-                    $nearestParent = $thisPage = Director::baseURL();
+                    $nearestParent = Director::baseURL();
+                    $thisPage = $nearestParent;
                     $toURL = $parent->FallbackLink;
                     $responseCode = $parent->FallbackResponseCode;
                 }
             } else {
                 $parentID = 0;
             }
+            // Determine the page specific fallback.
+            $counter = count($segments);
 
             // Determine the page specific fallback.
 
-            for($iteration = 0; $iteration < count($segments); $iteration++) {
+            for($iteration = 0; $iteration < $counter; $iteration++) {
                 $page = SiteTree::get()->filter([
                     'URLSegment' => $segments[$iteration],
                     'ParentID' => $parentID
@@ -311,6 +317,7 @@ class MisdirectionService
                         $toURL = $page->FallbackLink;
                         $responseCode = $page->FallbackResponseCode;
                     }
+
                     $parentID = $page->ID;
                 } else {
 
@@ -341,6 +348,7 @@ class MisdirectionService
                         $link = self::is_external_URL($toURL) ? (ClassInfo::exists(Multisites::class) ? HTTP::setGetVar('misdirected', true, $toURL) : $toURL) : ('/' . HTTP::setGetVar('misdirected', true, Controller::join_links(Director::baseURL(), $toURL)));
                         break;
                 }
+
                 if($link) {
                     return [
                         'link' => $link,

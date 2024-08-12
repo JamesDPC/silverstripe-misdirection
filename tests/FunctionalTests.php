@@ -32,7 +32,7 @@ class FunctionalTests extends FunctionalTest
      *	The test to ensure the request filter is functioning correctly.
      */
 
-    public function testRequestFilter()
+    public function testRequestFilter(): void
     {
 
         // Instantiate link mappings to use.
@@ -59,7 +59,7 @@ class FunctionalTests extends FunctionalTest
 
             // This is required to support multiple sites.
 
-            $this->logInAs(DefaultAdminService::findOrCreateDefaultAdmin());
+            $this->logInAs((new DefaultAdminService())->findOrCreateDefaultAdmin());
             $parentID = ClassInfo::exists(Multisites::class) ? Multisites::inst()->getCurrentSiteId() : 0;
 
             // Instantiate pages to use.
