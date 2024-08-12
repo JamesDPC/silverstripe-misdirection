@@ -35,6 +35,9 @@ class FunctionalTests extends FunctionalTest
     public function testRequestFilter(): void
     {
 
+        $first = null;
+        $second = null;
+
         // Instantiate link mappings to use.
 
         $mapping = LinkMapping::create(
