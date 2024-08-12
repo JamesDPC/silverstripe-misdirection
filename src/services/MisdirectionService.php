@@ -51,7 +51,7 @@ class MisdirectionService
      *	@parameter <{RETURN_STACK}> boolean
      */
 
-    public function getMappingByRequest($request, $testing = false): LinkMapping|array
+    public function getMappingByRequest($request, $testing = false): LinkMapping|array|null
     {
 
         // Make sure a URL comes through correctly.
@@ -290,7 +290,6 @@ class MisdirectionService
             } else {
                 $parentID = 0;
             }
-
             // Determine the page specific fallback.
             $counter = count($segments);
 
