@@ -19,6 +19,12 @@
         "name": "Nathan Glasl",
         "email": "nathan@symbiote.com.au"
     }],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/nswdpc/ci-files.git"
+        }
+    ],
     "require": {
         "silverstripe/framework": "^4 || ^5",
         "silverstripe/vendor-plugin": "^1 || ^2"
