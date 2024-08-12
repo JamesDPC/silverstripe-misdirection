@@ -369,10 +369,9 @@ class MisdirectionService
      *	@parameter <{MAPPING_URL}> string
      *	@parameter <{MAPPING_PAGE_ID}> integer
      *	@parameter <{MAPPING_PRIORITY}> integer
-     *	@return link mapping
      */
 
-    public function createPageMapping($URL, $redirectID, $priority = 1)
+    public function createPageMapping($URL, $redirectID, $priority = 1): LinkMapping
     {
 
         // Retrieve an already existing link mapping if one exists.
