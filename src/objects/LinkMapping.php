@@ -343,11 +343,9 @@ class LinkMapping extends DataObject
 
     /**
      *	Retrieve the redirection URL.
-     *
-     *	@return string
      */
 
-    public function getLink()
+    public function getLink(): ?string
     {
 
         if ($this->RedirectType === 'Page') {
@@ -414,7 +412,7 @@ class LinkMapping extends DataObject
     public function getLinkSummary(): string
     {
 
-        return ($link = $this->getLink()) ? trim($link ?? '', ' ?/') : '-';
+        return ($link = $this->getLink()) ? trim($link, ' ?/') : '-';
     }
 
     /**
