@@ -333,11 +333,9 @@ class LinkMapping extends DataObject
 
     /**
      *	Retrieve the page associated with this link mapping redirection.
-     *
-     *	@return site tree
      */
 
-    public function getRedirectPage()
+    public function getRedirectPage(): ?SiteTree
     {
 
         return (ClassInfo::exists(SiteTree::class) && $this->RedirectPageID) ? SiteTree::get()->byID($this->RedirectPageID) : null;
