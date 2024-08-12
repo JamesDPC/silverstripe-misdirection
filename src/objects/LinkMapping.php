@@ -356,7 +356,7 @@ class LinkMapping extends DataObject
 
                 // This is to support multiple sites, where the absolute page URLs are treated as relative.
 
-                return MisdirectionService::is_external_URL($link) ? ltrim($link ?? '', '/') : $link;
+                return MisdirectionService::is_external_URL($link) ? ltrim($link, '/') : $link;
             }
         } elseif ($link = (($this->LinkType === 'Regular Expression') && $this->matchedURL) ? preg_replace("%{$this->MappedLink}%i", $this->RedirectLink, $this->matchedURL) : $this->RedirectLink) {
             // Apply the regular expression pattern replacement.
