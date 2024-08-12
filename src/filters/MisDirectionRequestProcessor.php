@@ -130,7 +130,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
 
                 // Retrieve the appropriate page not found response.
 
-                (ClassInfo::exists(SiteTree::class) && ($page = ErrorPage::response_for(404))) ? $response->setBody($page->getBody()) : $response->setBody('No URL was matched!');
+                (class_exists(SiteTree::class) && ($page = ErrorPage::response_for(404))) ? $response->setBody($page->getBody()) : $response->setBody('No URL was matched!');
             }
 
         }

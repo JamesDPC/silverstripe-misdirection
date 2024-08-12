@@ -252,7 +252,7 @@ class MisdirectionService
 
         // Make sure the CMS module is present.
 
-        if(ClassInfo::exists(SiteTree::class) && $URL) {
+        if(class_exists(SiteTree::class) && $URL) {
 
             // Instantiate the required variables.
 
@@ -280,7 +280,7 @@ class MisdirectionService
 
             // This is required to support multiple sites.
 
-            if(ClassInfo::exists(Multisites::class) && ($parent = Multisites::inst()->getCurrentSite())) {
+            if(class_exists(Multisites::class) && ($parent = Multisites::inst()->getCurrentSite())) {
                 $parentID = $parent->ID;
                 if($parent->Fallback) {
                     $applicableRule = $parent->Fallback;
@@ -345,7 +345,7 @@ class MisdirectionService
 
                         // When appropriate, prepend the base URL to match a page redirection.
 
-                        $link = self::is_external_URL($toURL) ? (ClassInfo::exists(Multisites::class) ? HTTP::setGetVar('misdirected', true, $toURL) : $toURL) : ('/' . HTTP::setGetVar('misdirected', true, Controller::join_links(Director::baseURL(), $toURL)));
+                        $link = self::is_external_URL($toURL) ? (class_exists(Multisites::class) ? HTTP::setGetVar('misdirected', true, $toURL) : $toURL) : ('/' . HTTP::setGetVar('misdirected', true, Controller::join_links(Director::baseURL(), $toURL)));
                         break;
                 }
 
