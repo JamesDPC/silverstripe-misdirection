@@ -348,7 +348,7 @@ class LinkMapping extends DataObject
     public function getLink(): ?string
     {
 
-        if ($this->RedirectType === 'Page') {
+        if (class_exists(SiteTree::class) && $this->RedirectType === 'Page') {
             // Determine the home page URL when appropriate.
             if(($page = $this->getRedirectPage()) && ($link = ($page->Link() === Director::baseURL()) ? Controller::join_links(Director::baseURL(), 'home/') : $page->Link())) {
 
@@ -387,7 +387,7 @@ class LinkMapping extends DataObject
     public function getLinkHost(): int|string|array|false|null
     {
 
-        if ($this->RedirectType === 'Page') {
+        if (class_exists(SiteTree::class) && $this->RedirectType === 'Page') {
             // Determine the home page URL when appropriate.
             if(($page = $this->getRedirectPage()) && ($link = ($page->Link() === Director::baseURL()) ? Controller::join_links(Director::baseURL(), 'home/') : $page->Link())) {
 
@@ -436,7 +436,7 @@ class LinkMapping extends DataObject
     public function getRedirectPageTitle()
     {
 
-        return (($this->RedirectType === 'Page') && ($page = $this->getRedirectPage())) ? $page->Title : '-';
+        return ((class_exists(SiteTree::class)) && ($this->RedirectType === 'Page') && ($page = $this->getRedirectPage())) ? $page->Title : '-';
     }
 
     /**
@@ -445,7 +445,7 @@ class LinkMapping extends DataObject
     public function isLive(): string
     {
 
-        return ($this->RedirectType === 'Page') ? ($this->getRedirectPage() ? 'true' : 'false') : '-';
+        return ((class_exists(SiteTree::class)) && $this->RedirectType === 'Page') ? ($this->getRedirectPage() ? 'true' : 'false') : '-';
     }
 
 }
