@@ -4,6 +4,7 @@ namespace nglasl\misdirection;
 
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldSortableHeader;
 use SilverStripe\Security\Permission;
 
@@ -33,6 +34,7 @@ class MisdirectionAdmin extends ModelAdmin
     {
 
         $form = parent::getEditForm($ID, $fields);
+        /** @var GridField $gridfield **/
         $gridfield = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
         $gridfield->getConfig()->getComponentByType(GridFieldSortableHeader::class)->setFieldSorting([
             'RedirectTypeSummary' => 'RedirectType'
