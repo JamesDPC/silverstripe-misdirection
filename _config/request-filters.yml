@@ -1,5 +1,5 @@
 ---
-name: misdirection-request-filters
+Name: misdirection-request-filters
 ---
 SilverStripe\Core\Injector\Injector:
   SilverStripe\Control\Director:

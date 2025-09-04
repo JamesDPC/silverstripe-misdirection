@@ -1,5 +1,5 @@
 ---
-name: misdirection-upgrade
+Name: misdirection-upgrade
 ---
 SilverStripe\ORM\DatabaseAdmin:
   classname_value_remapping:
