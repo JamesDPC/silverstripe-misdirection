@@ -25,7 +25,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
     use Configurable;
     use Injectable;
 
-    private static $status_codes = [
+    private static array $status_codes = [
         301 => 'Moved Permanently',
         302 => 'Found',
         303 => 'See Other',
@@ -37,18 +37,18 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
 
     public $service;
 
-    private static $dependencies = [
+    private static array $dependencies = [
         'service' => '%$' . MisdirectionService::class
     ];
 
-    private static $enforce_misdirection = true;
+    private static bool $enforce_misdirection = true;
 
-    private static $replace_default = false;
+    private static bool $replace_default = false;
 
     /**
      *	The maximum number of consecutive link mappings.
      */
-    private static $maximum_requests = 9;
+    private static int $maximum_requests = 9;
 
     public function process(HTTPRequest $request, callable $delegate)
     {
@@ -72,7 +72,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
 
             // Determine if the current request matches a specific director rule.
 
-            if ($segment && in_array($segment, $bypass) && (($requestURL === $segment) || (strpos($requestURL, "{$segment}/") === 0))) {
+            if ($segment && in_array($segment, $bypass) && (($requestURL === $segment) || (str_starts_with($requestURL, "{$segment}/")))) {
 
                 // Continue processing the response.
                 return $response;
@@ -103,7 +103,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
 
                 $link = $map->getLink();
                 $base = Director::baseURL();
-                if ($replace && (substr($link, 0, strlen($base)) === $base) && (substr($link, strlen($base)) === 'home/')) {
+                if ($replace && (str_starts_with((string) $link, $base)) && (substr((string) $link, strlen($base)) === 'home/')) {
                     $link = $base;
                 }
 
@@ -137,6 +137,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
             }
 
         }
+
         return $response;
 
     }

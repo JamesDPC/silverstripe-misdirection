@@ -10,8 +10,8 @@ use SilverStripe\View\Requirements;
 /**
  *	This extension adds the testing interface used to view the link mapping recursion stack.
  *	@author Nathan Glasl <nathan@symbiote.com.au>
+ * @extends \SilverStripe\Core\Extension<(\nglasl\misdirection\MisdirectionAdmin & static)>
  */
-
 class MisdirectionAdminTestingExtension extends Extension
 {
 
@@ -41,7 +41,7 @@ class MisdirectionAdminTestingExtension extends Extension
 
         // Allow extension customisation.
 
-        $this->owner->extend('updateMisdirectionAdminTestingExtensionEditForm', $form);
+        $this->getOwner()->extend('updateMisdirectionAdminTestingExtensionEditForm', $form);
     }
 
 }

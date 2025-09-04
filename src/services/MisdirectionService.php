@@ -24,11 +24,8 @@ class MisdirectionService
 
     /**
      *	Unifies a URL so link mappings are predictable.
-     *
-     *	@return string
      */
-
-    public static function unify_URL(string $URL)
+    public static function unify_URL(string $URL): string
     {
 
         return strtolower(trim($URL, ' ?/'));
@@ -36,11 +33,8 @@ class MisdirectionService
 
     /**
      *	Use third party validation to determine an external URL (https://gist.github.com/dperini/729294 and http://mathiasbynens.be/demo/url-regex).
-     *
-     *	@return boolean
      */
-
-    public static function is_external_URL(string $URL)
+    public static function is_external_URL(string $URL): int|false
     {
 
         $URL = trim($URL, '/?!"#$%&\'()*+,-.@:;<=>[\\]^_`{|}~');
@@ -85,6 +79,7 @@ class MisdirectionService
 
         $URL = self::is_external_URL($URL) ? parse_url($URL, PHP_URL_PATH) : Director::makeRelative($URL);
         $URL = self::unify_URL($URL);
+
         $parts = explode('?', $URL);
 
         // Instantiate the link mapping query.
@@ -96,6 +91,7 @@ class MisdirectionService
         if (is_null($host) && Controller::has_curr() && ($controller = Controller::curr())) {
             $host = $controller->getRequest()->getHeader('Host');
         }
+
         $temporary = $host;
         $host = Convert::raw2sql($host);
         $matches = $matches->where("(HostnameRestriction IS NULL) OR (HostnameRestriction = '{$host}')");
@@ -116,6 +112,7 @@ class MisdirectionService
                 $filtered->push($match);
             }
         }
+
         $filtered->merge($matches);
         $matches = $filtered;
 
@@ -134,6 +131,7 @@ class MisdirectionService
         if (isset($parts[1])) {
             parse_str($parts[1], $queryParameters);
         }
+
         foreach ($matches as $match) {
 
             // Make sure the link mapping is live on the current stage.
@@ -142,14 +140,14 @@ class MisdirectionService
 
                 // Ignore GET parameter matching for regular expressions, considering the special characters.
 
-                $matchParts = explode('?', $match->MappedLink);
+                $matchParts = explode('?', (string) $match->MappedLink);
                 if (($match->LinkType === 'Simple') && isset($matchParts[1])) {
 
                     // Make sure the GET parameters match in any order.
 
                     $matchParameters = [];
                     parse_str($matchParts[1], $matchParameters);
-                    if ($matchParameters == $queryParameters) {
+                    if ($matchParameters === $queryParameters) {
                         return $match;
                     }
                 } else {
@@ -189,7 +187,7 @@ class MisdirectionService
 
         // Determine the subsequent host.
 
-        if ($map->getLinkHost()) {
+        if (!in_array($map->getLinkHost(), [null, ''], true)) {
             $host = $map->getLinkHost();
         }
 
@@ -208,6 +206,7 @@ class MisdirectionService
 
                 return $testing ? $chain : null;
             }
+
             $redirect = $next->getLink();
             $chain[] = array_merge($next->toMap(), [
                 'Counter' => ++$counter,
@@ -217,9 +216,10 @@ class MisdirectionService
 
             // Determine the subsequent host.
 
-            if ($next->getLinkHost()) {
+            if (!in_array($next->getLinkHost(), [null, ''], true)) {
                 $host = $next->getLinkHost();
             }
+
             $map = $next;
         }
 
@@ -256,7 +256,8 @@ class MisdirectionService
             $config = SiteConfig::current_site_config();
             if ($config && $config->Fallback) {
                 $applicableRule = $config->Fallback;
-                $nearestParent = $thisPage = Director::baseURL();
+                $nearestParent = Director::baseURL();
+                $thisPage = $nearestParent;
                 $toURL = $config->FallbackLink;
                 $responseCode = $config->FallbackResponseCode;
             }
@@ -267,17 +268,20 @@ class MisdirectionService
                 $parentID = $parent->ID;
                 if ($parent->Fallback) {
                     $applicableRule = $parent->Fallback;
-                    $nearestParent = $thisPage = Director::baseURL();
+                    $nearestParent = Director::baseURL();
+                    $thisPage = $nearestParent;
                     $toURL = $parent->FallbackLink;
                     $responseCode = $parent->FallbackResponseCode;
                 }
             } else {
                 $parentID = 0;
             }
+            // Determine the page specific fallback.
+            $counter = count($segments);
 
             // Determine the page specific fallback.
 
-            for ($iteration = 0; $iteration < count($segments); $iteration++) {
+            for ($iteration = 0; $iteration < $counter; $iteration++) {
                 $page = SiteTree::get()->filter([
                     'URLSegment' => $segments[$iteration],
                     'ParentID' => $parentID
@@ -297,6 +301,7 @@ class MisdirectionService
                         $toURL = $page->FallbackLink;
                         $responseCode = $page->FallbackResponseCode;
                     }
+
                     $parentID = $page->ID;
                 } else {
 
@@ -327,6 +332,7 @@ class MisdirectionService
                         $link = self::is_external_URL($toURL) ? (class_exists(Multisites::class) ? HTTP::setGetVar('misdirected', '1', $toURL) : $toURL) : ('/' . HTTP::setGetVar('misdirected', '1', Controller::join_links(Director::baseURL(), $toURL)));
                         break;
                 }
+
                 if ($link) {
                     return [
                         'link' => $link,
@@ -364,8 +370,8 @@ class MisdirectionService
         $mapping = LinkMapping::create();
         $mapping->MappedLink = $URL;
         $mapping->RedirectType = 'Page';
-        $mapping->RedirectPageID = (int)$redirectID;
-        $mapping->Priority = (int)$priority;
+        $mapping->RedirectPageID = $redirectID;
+        $mapping->Priority = $priority;
         $mapping->write();
         return $mapping;
     }
@@ -394,7 +400,7 @@ class MisdirectionService
         $mapping->MappedLink = $URL;
         $mapping->RedirectType = 'Link';
         $mapping->RedirectLink = $redirectURL;
-        $mapping->Priority = (int)$priority;
+        $mapping->Priority = $priority;
         $mapping->write();
         return $mapping;
     }

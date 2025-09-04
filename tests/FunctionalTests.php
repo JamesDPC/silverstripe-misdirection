@@ -33,7 +33,7 @@ class FunctionalTests extends FunctionalTest
      *	The test to ensure the request filter is functioning correctly.
      */
 
-    public function testRequestFilter()
+    public function testRequestFilter(): void
     {
 
         // Instantiate link mappings to use.
