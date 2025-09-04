@@ -21,7 +21,6 @@ use SilverStripe\ORM\ValidationResult;
  */
 class SiteTreeMisdirectionExtension extends DataExtension
 {
-
     /**
      *	This provides link mapping customisation directly from a page.
      */
@@ -66,7 +65,7 @@ class SiteTreeMisdirectionExtension extends DataExtension
         }
 
         // Determine whether another vanity mapping already exists.
-        
+
         $existing = LinkMapping::get()->filter([
             'MappedLink' => $vanityURL,
             'RedirectType' => 'Page',

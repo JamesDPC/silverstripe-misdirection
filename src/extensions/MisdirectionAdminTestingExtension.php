@@ -14,7 +14,6 @@ use SilverStripe\View\Requirements;
  */
 class MisdirectionAdminTestingExtension extends Extension
 {
-
     /**
      *	Update the edit form to include the URL input and test button.
      */

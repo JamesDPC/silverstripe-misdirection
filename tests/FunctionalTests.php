@@ -7,7 +7,6 @@ use nglasl\misdirection\MisDirectionRequestProcessor;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\FunctionalTest;
 use SilverStripe\Security\DefaultAdminService;
@@ -20,7 +19,6 @@ use Symbiote\Multisites\Multisites;
 
 class FunctionalTests extends FunctionalTest
 {
-
     protected $usesDatabase = true;
 
     /**

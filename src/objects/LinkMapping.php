@@ -6,7 +6,6 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTP;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
@@ -35,7 +34,6 @@ use Symbiote\Multisites\Multisites;
  */
 class LinkMapping extends DataObject
 {
-
     private static string $table_name = 'LinkMapping';
 
     /**

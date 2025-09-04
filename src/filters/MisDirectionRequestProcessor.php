@@ -14,14 +14,12 @@ use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Control\Middleware\HTTPMiddleware;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ErrorPage\ErrorPage;
 
 class MisDirectionRequestProcessor implements HTTPMiddleware
 {
-
     use Configurable;
     use Injectable;
 

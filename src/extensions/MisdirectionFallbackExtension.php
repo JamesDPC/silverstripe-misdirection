@@ -21,7 +21,6 @@ use SilverStripe\View\Requirements;
  */
 class MisdirectionFallbackExtension extends DataExtension
 {
-
     private static array $db = [
         'Fallback' => 'Varchar(255)',
         'FallbackLink' => 'Varchar(255)',

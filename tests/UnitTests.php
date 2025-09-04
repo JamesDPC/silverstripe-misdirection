@@ -5,7 +5,6 @@ namespace nglasl\misdirection\tests;
 use nglasl\misdirection\LinkMapping;
 use nglasl\misdirection\MisdirectionService;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 use Symbiote\Multisites\Multisites;
@@ -17,7 +16,6 @@ use Symbiote\Multisites\Multisites;
 
 class UnitTests extends SapphireTest
 {
-
     protected $usesDatabase = true;
 
     /**

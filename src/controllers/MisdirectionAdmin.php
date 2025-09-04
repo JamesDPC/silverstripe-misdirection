@@ -6,7 +6,6 @@ use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldSortableHeader;
-use SilverStripe\Security\Permission;
 
 /**
  *	@author Nathan Glasl <nathan@symbiote.com.au>
@@ -37,7 +36,7 @@ class MisdirectionAdmin extends ModelAdmin
 
         $form = parent::getEditForm($ID, $fields);
         $gridfield = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
-        if($gridfield instanceof GridField) {
+        if ($gridfield instanceof GridField) {
             $gridfield->getConfig()->getComponentByType(GridFieldSortableHeader::class)->setFieldSorting([
                 'RedirectTypeSummary' => 'RedirectType'
             ]);

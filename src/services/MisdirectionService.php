@@ -7,7 +7,6 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTP;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Convert;
 use SilverStripe\ORM\ArrayList;
@@ -21,7 +20,6 @@ use Symbiote\Multisites\Multisites;
 
 class MisdirectionService
 {
-
     /**
      *	Unifies a URL so link mappings are predictable.
      */

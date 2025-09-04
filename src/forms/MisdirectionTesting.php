@@ -11,7 +11,6 @@ use SilverStripe\Forms\GridField\GridField_HTMLProvider;
 
 class MisdirectionTesting implements GridField_HTMLProvider
 {
-
     /**
      *	Render the URL input and test button.
      */
