@@ -72,7 +72,7 @@ class SiteTreeMisdirectionExtension extends DataExtension
                 $this->owner->ID
             ]
         ])->first();
-        if ($result->isValid() && $existing && ($page = $existing->getRedirectPage())) {
+        if (class_exists(SiteTree::class) && class_exists(CMSPageSettingsController::class) && $result->isValid() && $existing && ($page = $existing->getRedirectPage())) {
             $link = Controller::join_links(CMSPageSettingsController::singleton()->Link('show'), $page->ID);
             $result->addError("Vanity URL <a href='{$link}' target='_blank'>already exists</a>!", ValidationResult::TYPE_ERROR, null, ValidationResult::CAST_HTML);
         }
@@ -140,7 +140,7 @@ class SiteTreeMisdirectionExtension extends DataExtension
 
         // Determine whether the default automated URL handling has been replaced.
 
-        if (Config::inst()->get(MisDirectionRequestProcessor::class, 'replace_default')) {
+        if (class_exists(SiteTree::class) && Config::inst()->get(MisDirectionRequestProcessor::class, 'replace_default')) {
 
             // Determine whether the URL segment or parent ID has been updated.
 

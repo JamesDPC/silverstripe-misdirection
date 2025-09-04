@@ -101,12 +101,11 @@ class LinkMapping extends DataObject
     /**
      *	Keep track of the initial URL for regular expression pattern replacement.
      *
-     *	@parameter <{URL}> string
      */
 
-    private $matchedURL;
+    private string $matchedURL;
 
-    public function setMatchedURL($matchedURL)
+    public function setMatchedURL(string $matchedURL)
     {
 
         $this->matchedURL = $matchedURL;
@@ -144,11 +143,9 @@ class LinkMapping extends DataObject
 
     /**
      *	Print the mapped URL associated with this link mapping.
-     *
-     *	@return string
      */
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
 
         return $this->MappedLink;
@@ -227,7 +224,7 @@ class LinkMapping extends DataObject
 
         // Allow redirect page configuration when the CMS module is present.
 
-        if (ClassInfo::exists(SiteTree::class)) {
+        if (class_exists(SiteTree::class)) {
 
             // Allow redirect type configuration.
 
@@ -299,7 +296,10 @@ class LinkMapping extends DataObject
 
         // Determine whether a regular expression mapping is possible to match against.
 
-        if ($result->isValid() && ($this->LinkType === 'Regular Expression') && (!$this->MappedLink || !is_numeric(@preg_match("%{$this->MappedLink}%", null)))) {
+        if ($result->isValid()
+            && ($this->LinkType === 'Regular Expression')
+            && (is_null($this->MappedLink) || @preg_match("%" . preg_quote((string)$this->MappedLink, "%") . "%", '') === false)
+        ) {
             $result->addError('Invalid regular expression!');
         }
 
@@ -331,26 +331,23 @@ class LinkMapping extends DataObject
 
     /**
      *	Retrieve the page associated with this link mapping redirection.
-     *
-     *	@return site tree
+     *  @phpstan-ignore class.notFound
      */
-
-    public function getRedirectPage()
+    public function getRedirectPage(): ?SiteTree
     {
 
-        return (ClassInfo::exists(SiteTree::class) && $this->RedirectPageID) ? SiteTree::get()->byID($this->RedirectPageID) : null;
+        return (class_exists(SiteTree::class) && $this->RedirectPageID) ? SiteTree::get()->byID($this->RedirectPageID) : null;
     }
 
     /**
      *	Retrieve the redirection URL.
      *
-     *	@return string
      */
 
-    public function getLink()
+    public function getLink(): ?string
     {
 
-        if ($this->RedirectType === 'Page') {
+        if ($this->RedirectType === 'Page' && class_exists(SiteTree::class)) {
 
             // Determine the home page URL when appropriate.
 
@@ -358,7 +355,7 @@ class LinkMapping extends DataObject
 
                 // This is to support multiple sites, where the absolute page URLs are treated as relative.
 
-                return MisdirectionService::is_external_URL($link) ? ltrim($link ?? '', '/') : $link;
+                return MisdirectionService::is_external_URL($link) ? ltrim($link, '/') : $link;
             }
         } else {
 
@@ -370,7 +367,7 @@ class LinkMapping extends DataObject
 
                 $prepended = Controller::join_links(Director::baseURL(), $link);
                 if (MisdirectionService::is_external_URL($link)) {
-                    return ClassInfo::exists(Multisites::class) ? HTTP::setGetVar('misdirected', true, $link) : $link;
+                    return class_exists(Multisites::class) ? HTTP::setGetVar('misdirected', '1', $link) : $link;
                 }
 
                 // This is needed, otherwise infinitely recursive mappings won't be detected in advance.
@@ -391,13 +388,12 @@ class LinkMapping extends DataObject
     /**
      *	Retrieve the redirection hostname.
      *
-     *	@return string
      */
 
-    public function getLinkHost()
+    public function getLinkHost(): ?string
     {
 
-        if ($this->RedirectType === 'Page') {
+        if ($this->RedirectType === 'Page' && class_exists(SiteTree::class)) {
 
             // Determine the home page URL when appropriate.
 
@@ -427,22 +423,20 @@ class LinkMapping extends DataObject
     /**
      *	Retrieve the redirection URL for display purposes.
      *
-     *	@return string
      */
 
-    public function getLinkSummary()
+    public function getLinkSummary(): string
     {
 
-        return ($link = $this->getLink()) ? trim($link ?? '', ' ?/') : '-';
+        return ($link = $this->getLink()) ? trim($link, ' ?/') : '-';
     }
 
     /**
      *	Retrieve the redirection type for display purposes.
      *
-     *	@return string
      */
 
-    public function getRedirectTypeSummary()
+    public function getRedirectTypeSummary(): string
     {
 
         return $this->RedirectType ? $this->RedirectType : '-';
@@ -451,22 +445,20 @@ class LinkMapping extends DataObject
     /**
      *	Retrieve the page title associated with this link mapping redirection.
      *
-     *	@return string
      */
 
-    public function getRedirectPageTitle()
+    public function getRedirectPageTitle(): string
     {
 
-        return (($this->RedirectType === 'Page') && ($page = $this->getRedirectPage())) ? $page->Title : '-';
+        return (($this->RedirectType === 'Page' && class_exists(SiteTree::class)) && ($page = $this->getRedirectPage())) ? $page->Title : '-';
     }
 
     /**
      *	Determine if the link mapping is live on the current stage.
      *
-     *	@return string
      */
 
-    public function isLive()
+    public function isLive(): string
     {
 
         return ($this->RedirectType === 'Page') ? ($this->getRedirectPage() ? 'true' : 'false') : '-';

@@ -4,6 +4,7 @@ namespace nglasl\misdirection;
 
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldSortableHeader;
 use SilverStripe\Security\Permission;
 
@@ -34,9 +35,11 @@ class MisdirectionAdmin extends ModelAdmin
 
         $form = parent::getEditForm($ID, $fields);
         $gridfield = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
-        $gridfield->getConfig()->getComponentByType(GridFieldSortableHeader::class)->setFieldSorting([
-            'RedirectTypeSummary' => 'RedirectType'
-        ]);
+        if($gridfield instanceof GridField) {
+            $gridfield->getConfig()->getComponentByType(GridFieldSortableHeader::class)->setFieldSorting([
+                'RedirectTypeSummary' => 'RedirectType'
+            ]);
+        }
 
         // Allow extension customisation.
 
@@ -48,7 +51,6 @@ class MisdirectionAdmin extends ModelAdmin
      *	Retrieve the JSON link mapping recursion stack for the testing interface.
      *
      *	@URLparameter map <{TEST_URL}> string
-     *	@return JSON
      */
     public function getMappingChain()
     {

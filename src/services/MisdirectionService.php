@@ -6,6 +6,7 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTP;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Convert;
@@ -24,39 +25,34 @@ class MisdirectionService
     /**
      *	Unifies a URL so link mappings are predictable.
      *
-     *	@parameter <{URL}> string
      *	@return string
      */
 
-    public static function unify_URL($URL)
+    public static function unify_URL(string $URL)
     {
 
-        return strtolower(trim($URL ?? '', ' ?/'));
+        return strtolower(trim($URL, ' ?/'));
     }
 
     /**
      *	Use third party validation to determine an external URL (https://gist.github.com/dperini/729294 and http://mathiasbynens.be/demo/url-regex).
      *
-     *	@parameter <{URL}> string
      *	@return boolean
      */
 
-    public static function is_external_URL($URL)
+    public static function is_external_URL(string $URL)
     {
 
-        $URL = trim($URL ?? '', '/?!"#$%&\'()*+,-.@:;<=>[\\]^_`{|}~');
+        $URL = trim($URL, '/?!"#$%&\'()*+,-.@:;<=>[\\]^_`{|}~');
         return preg_match('%^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@|\d{1,3}(?:\.\d{1,3}){3}|(?:(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)(?:\.(?:[a-z\d\x{00a1}-\x{ffff}]+-?)*[a-z\d\x{00a1}-\x{ffff}]+)*(?:\.[a-z\x{00a1}-\x{ffff}]{2,6}))(?::\d+)?(?:[^\s]*)?$%iu', $URL);
     }
 
     /**
      *	Retrieve the appropriate link mapping for a request, with the ability to enable testing and return the recursion stack.
      *
-     *	@parameter <{REQUEST}> http request
-     *	@parameter <{RETURN_STACK}> boolean
-     *	@return link mapping
      */
 
-    public function getMappingByRequest($request, $testing = false)
+    public function getMappingByRequest(HTTPRequest $request, bool $testing = false): LinkMapping|array|null
     {
 
         // Make sure a URL comes through correctly.
@@ -82,12 +78,9 @@ class MisdirectionService
     /**
      *	Retrieve the appropriate link mapping for a URL.
      *
-     *	@parameter <{URL}> string
-     *	@parameter <{HOSTNAME}> string
-     *	@return link mapping
      */
 
-    public function getMapping($URL, $host = null)
+    public function getMapping(string $URL, ?string $host = null): ?LinkMapping
     {
 
         $URL = self::is_external_URL($URL) ? parse_url($URL, PHP_URL_PATH) : Director::makeRelative($URL);
@@ -177,13 +170,9 @@ class MisdirectionService
     /**
      *	Traverse the link mapping chain and return the eventual result, preventing multiple redirections.
      *
-     *	@parameter <{LINK_MAPPING}> link mapping
-     *	@parameter <{HOSTNAME}> string
-     *	@parameter <{RETURN_STACK}> boolean
-     *	@return link mapping/array
      */
 
-    public function getRecursiveMapping($map, $host = null, $testing = false)
+    public function getRecursiveMapping(LinkMapping $map, ?string $host = null, bool $testing = false): LinkMapping|array
     {
 
         // Keep track of the link mapping recursion.
@@ -241,17 +230,13 @@ class MisdirectionService
 
     /**
      *	Determine the fallback for a URL when the CMS module is present.
-     *
-     *	@parameter <{URL}> string
-     *	@return array(string, integer)
      */
-
-    public function determineFallback($URL)
+    public function determineFallback(string $URL): ?array
     {
 
         // Make sure the CMS module is present.
 
-        if (ClassInfo::exists(SiteTree::class) && $URL) {
+        if (class_exists(SiteTree::class) && class_exists(SiteConfig::class) && $URL) {
 
             // Instantiate the required variables.
 
@@ -278,7 +263,7 @@ class MisdirectionService
 
             // This is required to support multiple sites.
 
-            if (ClassInfo::exists(Multisites::class) && ($parent = Multisites::inst()->getCurrentSite())) {
+            if (class_exists(Multisites::class) && ($parent = Multisites::inst()->getCurrentSite())) {
                 $parentID = $parent->ID;
                 if ($parent->Fallback) {
                     $applicableRule = $parent->Fallback;
@@ -330,16 +315,16 @@ class MisdirectionService
                     // Bypass the request filter.
 
                     case 'Nearest':
-                        $link = '/' . HTTP::setGetVar('misdirected', true, $nearestParent);
+                        $link = '/' . HTTP::setGetVar('misdirected', '1', $nearestParent);
                         break;
                     case 'This':
-                        $link = '/' . HTTP::setGetVar('misdirected', true, $thisPage);
+                        $link = '/' . HTTP::setGetVar('misdirected', '1', $thisPage);
                         break;
                     case 'URL':
 
                         // When appropriate, prepend the base URL to match a page redirection.
 
-                        $link = self::is_external_URL($toURL) ? (ClassInfo::exists(Multisites::class) ? HTTP::setGetVar('misdirected', true, $toURL) : $toURL) : ('/' . HTTP::setGetVar('misdirected', true, Controller::join_links(Director::baseURL(), $toURL)));
+                        $link = self::is_external_URL($toURL) ? (class_exists(Multisites::class) ? HTTP::setGetVar('misdirected', '1', $toURL) : $toURL) : ('/' . HTTP::setGetVar('misdirected', '1', Controller::join_links(Director::baseURL(), $toURL)));
                         break;
                 }
                 if ($link) {
@@ -358,14 +343,9 @@ class MisdirectionService
 
     /**
      *	Instantiate a new link mapping, redirecting a URL towards a page.
-     *
-     *	@parameter <{MAPPING_URL}> string
-     *	@parameter <{MAPPING_PAGE_ID}> integer
-     *	@parameter <{MAPPING_PRIORITY}> integer
-     *	@return link mapping
      */
 
-    public function createPageMapping($URL, $redirectID, $priority = 1)
+    public function createPageMapping(string $URL, int $redirectID, int $priority = 1): LinkMapping
     {
 
         // Retrieve an already existing link mapping if one exists.
@@ -392,14 +372,9 @@ class MisdirectionService
 
     /**
      *	Instantiate a new link mapping, redirecting a URL towards another URL.
-     *
-     *	@parameter <{MAPPING_URL}> string
-     *	@parameter <{MAPPING_REDIRECT_URL}> string
-     *	@parameter <{MAPPING_PRIORITY}> integer
-     *	@return link mapping
      */
 
-    public function createURLMapping($URL, $redirectURL, $priority = 1)
+    public function createURLMapping(string $URL, string $redirectURL, int $priority = 1): LinkMapping
     {
 
         // Retrieve an already existing link mapping if one exists.

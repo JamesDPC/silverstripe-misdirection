@@ -17,6 +17,7 @@ use SilverStripe\Control\Middleware\HTTPMiddleware;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\ErrorPage\ErrorPage;
 
 class MisDirectionRequestProcessor implements HTTPMiddleware
 {
@@ -86,7 +87,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
 
         if ($response) {
 
-            $status = $response ? $response->getStatusCode() : null;
+            $status = $response->getStatusCode();
             $success = (($status >= 200) && ($status < 300));
             $error = ($status === 404);
 
@@ -132,7 +133,7 @@ class MisDirectionRequestProcessor implements HTTPMiddleware
 
                 // Retrieve the appropriate page not found response.
 
-                (ClassInfo::exists(SiteTree::class) && ($page = ErrorPage::response_for(404))) ? $response->setBody($page->getBody()) : $response->setBody('No URL was matched!');
+                (class_exists(ErrorPage::class) && ($page = ErrorPage::response_for(404))) ? $response->setBody($page->getBody()) : $response->setBody('No URL was matched!');
             }
 
         }

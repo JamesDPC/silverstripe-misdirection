@@ -36,7 +36,7 @@ class MisdirectionFallbackExtension extends DataExtension
     public function updateCMSFields(FieldList $fields)
     {
 
-        if ($this->owner instanceof SiteConfig) {
+        if (class_exists(SiteConfig::class) && $this->owner instanceof SiteConfig) {
             return $this->owner->updateFields($fields);
         }
     }
@@ -62,7 +62,7 @@ class MisdirectionFallbackExtension extends DataExtension
             'This' => 'This Page',
             'URL' => 'URL'
         ];
-        if ($this->owner instanceof SiteConfig) {
+        if (class_exists(SiteConfig::class) && $this->owner instanceof SiteConfig) {
             $tab = 'Root.Pages';
             unset($options['This']);
         }

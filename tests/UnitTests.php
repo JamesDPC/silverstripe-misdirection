@@ -93,7 +93,7 @@ class UnitTests extends SapphireTest
 
         // Determine whether the regular expression replacement is correct.
 
-        $this->assertEquals($mapping->getLink(), ClassInfo::exists(Multisites::class) ? 'https://www.correct.com/page?misdirected=1' : 'https://www.correct.com/page');
+        $this->assertEquals($mapping->getLink(), class_exists(Multisites::class) ? 'https://www.correct.com/page?misdirected=1' : 'https://www.correct.com/page');
     }
 
     /**

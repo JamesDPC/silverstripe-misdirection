@@ -54,14 +54,17 @@ class FunctionalTests extends FunctionalTest
             ]
         )->write();
 
+        $first = null;
+        $second = null;
+
         // The CMS module needs to be present to test page behaviour.
 
-        if (ClassInfo::exists(SiteTree::class)) {
+        if (class_exists(SiteTree::class)) {
 
             // This is required to support multiple sites.
 
-            $this->logInAs(DefaultAdminService::findOrCreateDefaultAdmin());
-            $parentID = ClassInfo::exists(Multisites::class) ? Multisites::inst()->getCurrentSiteId() : 0;
+            $this->logInAs(DefaultAdminService::singleton()->findOrCreateDefaultAdmin());
+            $parentID = class_exists(Multisites::class) ? Multisites::inst()->getCurrentSiteId() : 0;
 
             // Instantiate pages to use.
 
@@ -91,7 +94,7 @@ class FunctionalTests extends FunctionalTest
 
         // The CMS module needs to be present to test page behaviour.
 
-        if (ClassInfo::exists(SiteTree::class)) {
+        if (class_exists(SiteTree::class)) {
 
             // Update the default enforce misdirection.
 
